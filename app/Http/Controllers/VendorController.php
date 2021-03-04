@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class VendorController extends Controller
 {
@@ -31,6 +32,15 @@ class VendorController extends Controller
     public function create(Request $request)
     {
         $inputVendor =  $request->all();
+
+        $validator = Validator::make($inputVendor, [
+            'vendor_name' => 'required',
+            'vendor_address' => 'required',
+            'email' => 'nullable|email',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
         // insert into vendor(vendor_name..) values(....)
         $vendor = new Vendor();
         $vendor->vendor_name = $inputVendor["vendor_name"];

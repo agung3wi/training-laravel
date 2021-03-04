@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthRestMiddleware
 {
@@ -16,10 +17,10 @@ class AuthRestMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->input('token') !== 'my-secret-token') {
+        if (!Auth::check()) {
             return response()->json([
-                "message" => "Unauthorized"
-            ], 401);
+                "message" => "Forbidden"
+            ], 403);
         }
         return $next($request);
     }
